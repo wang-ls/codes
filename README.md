@@ -1,29 +1,23 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This project use mysql, as DBMS.
 
-### What is this repository for? ###
+### Database ###
+* Use the file sql.sql to create your database under mysql
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Run the source ###
+You must have node installed on your system.
+Run the following command at the root of the project:
 
-### How do I get set up? ###
+* $ npm install
+* $ electron main.js
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Login ###
 
-### Contribution guidelines ###
+* Use the default password : "123" to login
 
-* Writing tests
-* Code review
-* Other guidelines
+### Build packages? ###
+Run theses scripts to build the packages for differents distribution
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* $ npm run script package-linux for linux
+* $ npm run script package-win64 for windows
