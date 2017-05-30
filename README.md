@@ -1,15 +1,16 @@
 # README #
 
-This project use sqlite3, as DBMS.
+This project use mysql, as DBMS.
 
+### Database ###
+* Use the file sql.sql to create your database under mysql
 
 ### Run the source ###
 You must have node installed on your system.
 Run the following command at the root of the project:
 
 * $ npm install
-* $ npm install -g gulp
-* $ gulp run
+* $ electron main.js
 
 ### Login ###
 
