@@ -1,4 +1,4 @@
-//  Protocol controller 
+//  Protocol controller
 (function () {
     'use strict';
     angular.module('app')
@@ -15,11 +15,12 @@
         self.welcome = 0;
         self.selectProtocol = selectProtocol;
         self.selectPatient = selectPatient;
-        self.deleteProtocol = deleteProtocol;
+        // self.deleteProtocol = deleteProtocol;
         self.saveProtocol = saveProtocol;
         self.createProtocol = createProtocol;
         self.cancelProtocol = cancelProtocol;
         self.filter = filterProtocol;
+        self.success = successFunction;
         self.filterPatient = filterPatient;
         self.year = new Date().getFullYear();
         self.cdate = new Date();
@@ -49,38 +50,39 @@
             self.selectedIndex = angular.isNumber(protocol) ? protocol: index;
             self.states = 'edit';
         }
+        function successFunction() {
+            demo.showSwal('success-message');
+        }
+        function errorFunction() {
+            demo.showSwal('error-message');
+        }
         function selectPatient(protocol, index) {
             self.selected.patient = self.patients[index].patient;
             self.patients  = [];
 
         }
-        function deleteProtocol($event) {
-          protocolService.destroy(self.selected.protocol_id).then(function (affectedRows) {
-             self.protocols .splice(self.selectedIndex, 1);
-          });
 
-        }
 
         function saveProtocol($event) {
-
+            var i = self.protocols.length;
             if (self.selected.patient == undefined || self.selected.name == undefined || self.selected.date == undefined || self.selected.note == undefined) {
-                demo.showSwal('error-message');
+                errorFunction();
             }else{
               if (self.selected != null && self.selected.protocol_id != null) {
                   protocolService.update(self.selected).then(function (affectedRows) {
-                       demo.showSwal('success-message');
+
                   });
+                  successFunction();
               }
               else {
-                  protocolService.create(self.selected).then(function (affectedRows) {
-                     demo.showSwal('success-message');
+                  protocolService.create(self.selected, i).then(function (affectedRows) {
+
                   });
+                  successFunction();
               }
               self.states = 'list';
               getAllProtocols ();
             }
-
-
 
         }
         function cancelProtocol() {

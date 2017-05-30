@@ -9,25 +9,43 @@
         self.selectedIndex = 0;
         self.user = null;
         self.login = login;
+        self.users  = [];
         self.year = new Date().getFullYear();
         self.changePassword = password;
         function login() {
-          unlockService.getUserById(self.password).then(function (user) {
-               if (user.length > 0) {
-                 self.user = user[0];
-                 if (self.user !== null && self.user.password === self.password) {
-                     $location.path('/dashboard');
-                 } else {
-                  //  User entered wrong password
-                  demo.showSwal('wrong-password');
+            createusers();
+            unlockService.getUserById(self.password).then(function (user) {
+                 if (user.length > 0) {
 
+                   self.user = user[0];
+                   if (self.user !== null && self.user.password === self.password) {
+                       $location.path('/dashboard');
+                   } else {
+                    //  User entered wrong password
+                    demo.showSwal('wrong-password');
+
+                   }
+                 }else{
+                     //  User entered wrong password or empty password
+                   demo.showSwal('wrong-password');
                  }
-               }else{
-                   //  User entered wrong password or empty password
-                 demo.showSwal('wrong-password');
-               }
-          });
+            });
+
+
+
         };
+
+        function successFunction() {
+            demo.showSwal('success-message');
+        }
+        function errorFunction() {
+            demo.showSwal('wrong-password');
+        }
+        function createusers () {
+            unlockService.insertUser().then(function (users ) {
+                self.users  = [].concat(users );
+            });
+        }
         function password() {
           // Get default ser in system and check password
           unlockService.getUserById(self.password).then(function (user) {
@@ -35,16 +53,16 @@
                  self.user = user[0];
                  if (self.user !== null && self.user.password === self.password) {
                     unlockService.changePassword(self.firstname, self.newpassword, self.user).then(function (affectedRows) {
-                        demo.showSwal('success-message');
 
                     });
-                    //  logout the user
+                    //  successFunction();
+                     demo.showNotification('top','left','You changed your password !');
                      $location.path('/dashboard');
                  } else {
-                  demo.showSwal('wrong-password');
+                  errorFunction();
                  }
                }else{
-                 demo.showSwal('wrong-password');
+                 errorFunction();
                }
           });
         };

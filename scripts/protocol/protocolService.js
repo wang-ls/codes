@@ -1,14 +1,10 @@
 (function () {
     'use strict';
-    var mysql = require('mysql');
 
-    // Creates MySql database connection
-    var connection = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "root",
-        database: "protocol_manager"
-    });
+    var sqlite3 = require('sqlite3').verbose();
+    var db = new sqlite3.Database('protocol_management.db');
+    var check;
+
 
     angular.module('app')
         .service('protocolService', ['$q', ProtocolService]);
@@ -16,98 +12,57 @@
     function ProtocolService($q) {
         return {
             getProtocols: getProtocols,
-            getById: getProtocolById,
             searchData: searchData,
             // Search patients recorded in db for autocomplete
             searchPatient: searchPatient,
             create: createProtocol,
-            destroy: deleteProtocol,
             update: updateProtocol
         };
 
         function getProtocols() {
             var deferred = $q.defer();
-            var query = "SELECT * FROM protocols";
-            connection.query(query, function (err, rows) {
+            db.run("CREATE TABLE if not exists protocols (protocol_id integer AUTO_INCREMENT PRIMARY KEY, name text NOT NULL , date datetime , patient text NOT NULL, note text NOT NULL)");
+            db.all("SELECT * FROM protocols", function(err, rows) {
                 if (err) deferred.reject(err);
                 deferred.resolve(rows);
             });
             return deferred.promise;
         }
 
-        function getProtocolById(id) {
-            var deferred = $q.defer();
-            var query = "SELECT * FROM protocols WHERE protocol_id = ?";
-            connection.query(query, [id], function (err, rows) {
-                if (err) deferred.reject(err);
-                deferred.resolve(rows);
-            });
-            return deferred.promise;
-        }
-// Defautlt search function
+
         function searchData(value) {
             var deferred = $q.defer();
-            var query = "SELECT * FROM protocols WHERE name LIKE  '" + value + "%' OR patient LIKE  '" + value + "%' OR note LIKE  '" + value + "%'" ;
-            connection.query(query, [value], function (err, rows) {
-                console.log(err)
+            db.all("SELECT * FROM protocols WHERE name LIKE  '" + value + "%' OR patient LIKE  '" + value + "%' OR note LIKE  '" + value + "%'", function(err, rows) {
                 if (err) deferred.reject(err);
-
                 deferred.resolve(rows);
             });
             return deferred.promise;
         }
-
-// Search patient recorded
 
         function searchPatient(value) {
             var deferred = $q.defer();
-            var query = "SELECT distinct patient FROM protocols WHERE patient LIKE  '" + value + "%'" ;
-            connection.query(query, [value], function (err, rows) {
-                console.log(err)
+            db.all("SELECT distinct patient FROM protocols WHERE patient LIKE  '" + value + "%'", function(err, rows) {
                 if (err) deferred.reject(err);
-
                 deferred.resolve(rows);
             });
             return deferred.promise;
         }
-//  this function is use to create new protocol
-        function createProtocol(protocol) {
+        function createProtocol(protocol, i) {
             var deferred = $q.defer();
-            var query = "INSERT INTO protocols SET ?";
-            connection.query(query, protocol, function (err, res) {
-                if (err) deferred.reject(err);
-                deferred.resolve(res.insertId);
-            });
-            return deferred.promise;
-        }
-// This function is not use yet
-        function deleteProtocol(id) {
-            var deferred = $q.defer();
-            var query = "DELETE FROM protocols WHERE protocol_id = ?";
-            connection.query(query, [id], function (err, res) {
-                if (err) deferred.reject(err);
-                console.log(res);
-                deferred.resolve(res.affectedRows);
-            });
+            var query = db.prepare("INSERT INTO protocols (protocol_id, name, date, patient, note) VALUES (?,?,?,?,?)");
+            query.run(i+1,protocol.name, protocol.date,  protocol.patient,  protocol.note);
+            query.finalize();
             return deferred.promise;
         }
 
+
         function updateProtocol(protocol) {
-            var deferred = $q.defer();
-            var query = "UPDATE protocols SET name = ?, patient = ?, note = ?, date = ? WHERE protocol_id = ?";
-            connection.query(query, [protocol.name, protocol.patient, protocol.note, protocol.date, protocol.protocol_id], function (err, res) {
-                if (err) deferred.reject(err);
-                deferred.resolve(res);
-            });
-            return deferred.promise;
+
+           var deferred = $q.defer();
+           var query = db.prepare("UPDATE protocols SET name = ?, patient = ?, date = ?, note = ? WHERE protocol_id = ? ");
+           query.run(protocol.name, protocol.patient, protocol.date, protocol.note, protocol.protocol_id);
+           query.finalize();
+          return deferred.promise;
         }
     }
 })();
-//
-// CREATE TABLE `protocol_manager`.`protocols` (
-//   `protocol_id` INT NOT NULL AUTO_INCREMENT,
-//   `name` VARCHAR(45) NOT NULL,
-//   `date` datetime,
-//   `patient` VARCHAR(45) NULL,
-//   `note` VARCHAR(500) NULL, PRIMARY KEY (`protocol_id`)
-// );
