@@ -1,0 +1,9 @@
+{
+  "name": "SPR",
+  "version": "0.0.0",
+  "description": "A simple protocol recorder should help psychotherapists to record protocols of healing sessions with patients.",
+  "main": "main.js",
+  "dependencies": {
+    "mysql": "2.9.0"
+  }
+}
