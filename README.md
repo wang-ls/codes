@@ -6,7 +6,7 @@ You must have node installed on your system.
 Run the following command at the root of the project:
 
 * $ npm install
-Launch electron rebuild command, on linux
+Launch electron-rebuild ./node_modules/.bin/electron-rebuild (or .\node_modules\.bin\electron-rebuild.cmd on windows)
 * $ ./node_modules/.bin/electron-rebuild
 * $ electron main.js
 
