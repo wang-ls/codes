@@ -13,7 +13,7 @@
         self.year = new Date().getFullYear();
         self.changePassword = password;
         function login() {
-            // createusers();
+            createusers();
             unlockService.getUserById(self.password).then(function (user) {
                  if (user.length > 0) {
 

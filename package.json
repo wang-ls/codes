@@ -13,16 +13,15 @@
   "devDependencies": {
     "electron": "^1.4.5",
     "electron-installer-dmg": "^0.1.2",
-    "electron-packager": "^8.1.0",
+    "electron-packager": "^8.7.0",
     "electron-rebuild": "^1.5.11",
     "electron-winstaller": "^2.4.1"
   },
   "scripts": {
     "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32  --prune=true --out=release-builds --version-string.CompanyName=SRP --version-string.FileDescription=SRP --version-string.ProductName=\"Simple Protocol Recorder\"",
-    "package-win64": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64  --prune=true --out=release-builds --version-string.CompanyName=SRP --version-string.FileDescription=SRP --version-string.ProductName=\"Simple Protocol Recorder\"",
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32  --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=SRP --version-string.FileDescription=SRP --version-string.ProductName=\"Simple Protocol Recorder\"",
+    "package-win64": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64  --icon=assets/icons/win/icon.ico  --prune=true --out=release-builds --version-string.CompanyName=SRP --version-string.FileDescription=SRP --version-string.ProductName=\"Simple Protocol Recorder\"",
     "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/icon.png --prune=true --out=release-builds",
-    "create-installer-mac": "electron-installer-dmg ./release-builds/Electron\\ tutorial\\ app-darwin-x64/Electron\\ tutorial\\ app.app electron-tutorial-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
     "create-installer-win": "node installers/windows/createinstaller.js"
   }
 }
